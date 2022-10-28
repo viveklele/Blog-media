@@ -1,5 +1,9 @@
 {% extends "blog/base.html" %}
 {% block content %}
+	<style>
+
+
+	</style>
 	<article class="media content-section">
 		<img class="rounded-circle article-img" src="{{ object.author.profile.image.url }}">
 	  <div class="media-body">
@@ -20,6 +24,10 @@
 		<audio src="{{ object.audio.url }}" controls>audio</audio>		
 		<h2><b>Video</h2>
 		<video width="600" height="400" controls src="{{ object.video.url }}"></video> 
+		{% if object.author == user %}
+	<br><br><p>keywords are:</p>
+			<tags class="article-title">{{object.keywords}}</tags>
+		{% endif %}
 	  </div>
 	</article>
 {% endblock content%}  	

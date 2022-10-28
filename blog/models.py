@@ -11,8 +11,9 @@ class Post(models.Model):
 	blog_image = models.ImageField(default='default_blog.jpg' ,upload_to='blog_pics')
 	audio = models.FileField(default="No audio posted", upload_to='audio_files')
 	video = models.FileField(default="No video posted", upload_to='video_files')
-
+	keywords = models.CharField(max_length=50, default='')
 	
+			
 	def __str__(self):
 		return self.title
 		
@@ -20,4 +21,5 @@ class Post(models.Model):
 	def get_absolute_url(self):
 		return reverse('post-detail', kwargs={'pk':self.pk})
 		
-		
+	class Meta:
+		ordering = ('-date_posted',)	

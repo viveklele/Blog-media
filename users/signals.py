@@ -3,7 +3,10 @@ from django.contrib.auth.models import User
 from django.dispatch import receiver
 from .models import Profile
 from django.core.exceptions import ObjectDoesNotExist
+
 @receiver(post_save, sender=User)
+# create_profile = receiver(create_profile)
+# receiver(post_save, **kwarks)
 def create_profile(sender, instance, created, **kwargs):
 	if created:
 		Profile.objects.create(user=instance)
@@ -14,3 +17,5 @@ def save_profile(sender, instance, **kwargs):
 		instance.profile.save()
 	except ObjectDoesNotExist:
 		Profile.objects.create(user=instance)
+
+	

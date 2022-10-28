@@ -8,10 +8,16 @@
 			<fieldset class="form-group">	
 				<legend class="border-bottom mb-4"><b>Bolg Post</b></legend> 
 				{{ form|crispy }}
+				
 			</fieldset>	
+			
 			<div class='form-group'>
 				<button class='btn btn-outline-info' type='submit'>Post</button>
 			</div>
 		</form>
 	</div>
 {% endblock content%} 
+<!-- <tags class="tagify tags-input tagify--noTags tagify--empty" tabindex="-1" aria-expanded="false">
+			<span contenteditable data-placeholder="Enter tags (comma seperated)" aria-placeholder="Enter tags (comma seperated)" 
+			class="tagify__input" role="textbox" aria-autocomplete="both" aria-multiline="false">{{object.keywords}}</span>
+		</tags> -->

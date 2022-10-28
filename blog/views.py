@@ -3,6 +3,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.models import User
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from .models import Post
+from django.db.models import Q
 
 def home(request):
     context = {
@@ -14,14 +15,14 @@ class PostListView(ListView):
 	model = Post
 	template_name = 'blog/home.html' # '<app>/<model>_<viewtype>.html'
 	context_object_name = 'posts'
-	ordering = ['-date_posted']
-	paginate_by = 5
+	# ordering = ['-date_posted']
+	# paginate_by = 5
 
 class UserPostListView(ListView):
 	model = Post
 	template_name = 'blog/user_posts.html' # '<app>/<model>_<viewtype>.html'
 	context_object_name = 'posts'
-	paginate_by = 5
+	# paginate_by = 5
 	
 	def get_queryset(self):
 		user = get_object_or_404(User, username=self.kwargs.get('username'))
@@ -34,7 +35,7 @@ class PostDetailView(DetailView):
 	
 class PostCreateView(LoginRequiredMixin, CreateView): 
 	model = Post
-	fields = ['title', 'content', 'blog_image', 'audio', 'video']
+	fields = ['title', 'content', 'blog_image', 'audio', 'video', 'keywords']
 	
 	def form_valid(self, form):
 		form.instance.author = self.request.user
@@ -43,7 +44,7 @@ class PostCreateView(LoginRequiredMixin, CreateView):
 
 class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView): 
 	model = Post
-	fields = ['title', 'content', 'blog_image', 'audio', 'video']
+	fields = ['title', 'content', 'blog_image', 'audio', 'video', 'keywords']
 	
 	def form_valid(self, form):
 		form.instance.author = self.request.user
@@ -64,7 +65,36 @@ class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 		if self.request.user == post.author:
 			return True
 		return False
-
+class PostGridView(ListView):
+	model = Post
+	template_name = 'blog/gridview.html' # '<app>/<model>_<viewtype>.html'
+	context_object_name = 'posts'
+	 
+	
 	
 def about(request):
     return render(request, 'blog/about.html', {'title': 'About'})
+
+def grid_view(request):
+	context = {
+		'posts': Post.objects.all()
+	}
+	return render(request, 'blog/gridview.html', context)
+
+def search(request):
+	query = request.GET['query']
+	if len(query) > 20:
+		allPosts = Post.objects.none()
+		user = Profile.objects.none()
+	else:
+		# allPosts = Post.objects.filter(title__icontains=query)
+		# author = Post.objects.filter(author__username__icontains=query)
+		# allPosts = allPosts.union(author)
+	# if allPosts.count() == 0:
+		allPosts = Post.objects.filter(Q(title__icontains=query) | Q(author__username__icontains=query) | 
+		Q(keywords__icontains=query))
+	paras = {
+		'allPosts': allPosts, 'query': query
+	}
+	paras = {'allPosts' : allPosts, 'query': query}
+	return render(request, 'blog/search.html', paras)
