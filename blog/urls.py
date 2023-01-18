@@ -12,7 +12,9 @@ urlpatterns = [
 	path('about/', views.about, name='blog-about'),
 	path('grid_view/', views.grid_view, name='blog-grid_view'),
 	path('Grid_view/', PostGridView.as_view(), name='blog-grid'),
-	path('search/', views.search, name='search')
+	path('search/', views.search, name='search'),
+	# path('search/', views.search_address, name='search')  # for suggetions in search bar
+	
 	
 ]
 

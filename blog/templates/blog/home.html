@@ -1,10 +1,20 @@
 {% extends "blog/base.html" %}
+{% load static %}
 {% block content %}
+<!-- <style>
+	.content-section{
+		border: 4px solid #dddddd;
+		border-color: lightblue;
+		border-radius: 30px;
+	}
+</style> -->
 
-	
+	<div class="my-data-container">
+		
 	{% for post in posts %}
-		<article class="media content-section infinite-item">
-			<img class="rounded-circle article-img" src="{{ post.author.profile.image.url }}" loading="lazy">
+	<!-- <div class="infinite-item"> -->
+		<article class="media content-section">
+			<img class="rounded-circle article-img" src="{{ post.author.profile.image.url }}">
 		  <div class="media-body">
 			<div class="article-metadata">
 			  <a class="mr-2" href="{% url 'user-posts' post.author.username %}" >{{ post.author }}</a>
@@ -14,32 +24,87 @@
 			<p class="article-content">{{ post.content }}</p>
 		  </div>
 		</article>
+	<!-- </div> -->
+	{% endfor %}
+	 <!-- </div> -->
 
-	{% endfor %} 
-	<!-- {% if is_paginated %}
+	{% if is_paginated %}
 		{% if page_obj.has_previous %}
 			<a class="btn btn-outline-info mb-4" href="?page=1">First</a>
 			<a class="btn btn-outline-info mb-4" href="?page={{ page_obj.previous_page_number }}">Previous</a>
 		{% endif %}
-		
-		{% for num in page_obj.paginator.page_range %}
+
+	{% for num in page_obj.paginator.page_range %}
 			{% if page_obj.number == num %}
 				<a class="btn btn-info mb-4" href="?page={{ num }}">{{ num }}</a>
 			{% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
 				<a class="btn btn-outline-info mb-4" href="?page={{ num }}">{{ num }}</a>
 			{% endif %}
-		{% endfor %}
-	{% endif %}   -->
-	<!-- <script>
-		var infinite = new Waypoint.Infinite({
-		  element: $('.infinite-container')[0],
-		  onBeforePageLoad: function () {
-			$('.loading').show();
-		  },
-		  onAfterPageLoad: function ($items) {
-			$('.loading').hide();
-		  }
-		});
-	  </script> -->
-{% endblock content%}  	
+	{% endfor %}
 
+		{% if page_obj.has_next %}
+			<a class="btn btn-outline-info mb-4" href="?page={{page_obj.next_page_number}}">Next</a>
+			<a class="btn btn-outline-info mb-4" href="?page={{ page_obj.paginator.num_pages }}">Last</a>
+		{% endif %}
+
+	{% endif %}
+  
+	<!-- {% if page_obj.has_next %}
+		<a class="infinite-more-link" href="?page={{ page_obj.next_page_number }}"></a>
+	{% endif %} -->
+
+
+    <!-- <script src="/static/blog/jquery-2.2.4.min.js"></script>
+    <script src="/static/blog/jquery.waypoints.min.js"></script>
+    <script src="/static/blog/infinite.min.js"></script>
+    <script>
+		var infinite = new Waypoint.Infinite({
+			element: $('.infinite-container')[0],
+			handler: function(direction) {
+		},
+		offset: 'bottom-in-view',
+		onBeforePageLoad: function () {
+		$('.spinner-border').show();
+		},
+		onAfterPageLoad: function () {
+		$('.spinner-border').hide();
+		}
+		});
+	</script> -->
+	<!-- ---------------------------------------------------------------- -->
+	<!-- <script src="/static/blog/infinite.min.js"></script>
+	<script src="/static/blog/jquery.waypoints.min.js"></script>
+	<script>
+		var infinite = new Waypoint.Infinite({
+			element: $('.infinite-container')[0],
+			
+			offset: 'bottem-in-view',
+		})
+	</script> -->
+	<!-- ---------------------------------------------------------------- -->
+
+	<script>
+		$(document).ready(function() {
+    var current_page = 1;
+
+    function load_more_data() {
+        $.ajax({
+            url: '/load_more_data/',
+            type: 'GET',
+            data: {'page': current_page},
+            success: function(data) {
+                $('#my-data-container').append(data);
+                current_page++;
+            }
+        });
+    }
+
+    $(window).scroll(function() {
+        if ($(window).scrollTop() + $(window).height() > $(document).height() - 100) {
+            load_more_data();
+        }
+    });
+});
+
+	</script>
+{% endblock content%}  	
